@@ -4,7 +4,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 public class DatabaseConnection{
     private static final String URL =
-            "jdbc:postgresql://aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres?sslmode=require";
+            "jdbc:postgresql://aws-1-eu-west-1.pooler.supabase.com:5432/postgres?sslmode=require";
     private static final String USER = "postgres.nvikiacxeckhymdasttx";
     private static final String PASSWORD = "Smart_parking_2026" ;
     private DatabaseConnection() {
