@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/OOPP.iml" filepath="$PROJECT_DIR$/.idea/OOPP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/oop2026-group04-parking-system.iml" filepath="$PROJECT_DIR$/oop2026-group04-parking-system.iml" />
     </modules>
   </component>
 </project>
