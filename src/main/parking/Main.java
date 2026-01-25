@@ -2,7 +2,7 @@ package parking;
 
 import parking.database.DatabaseConnection;
 import parking.service.ParkingSpotRepository;
-import parking.service.VehicleService;
+import parking.service.ParkingSpotService;import parking.service.VehicleService;
 import parking.model.ParkingSpot;
 
 public class Main {

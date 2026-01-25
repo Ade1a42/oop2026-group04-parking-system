@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class ParkingSpotRepository implements IParkingSpotRepository {
+public abstract class ParkingSpotRepository implements IParkingSpotRepository {
     private final IDB db;
 
     public ParkingSpotRepository(IDB db) {
