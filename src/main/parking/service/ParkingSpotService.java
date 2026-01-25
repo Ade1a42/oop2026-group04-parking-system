@@ -35,4 +35,11 @@ public class ParkingSpotService {
         return repository.findById(id);
     }
 
+    public ParkingSpot updateSpot(ParkingSpot spot) {
+        return repository.update(spot);
+    }
+
+    public boolean deleteSpot(int id) {
+        return repository.delete(id);
+    }
 }

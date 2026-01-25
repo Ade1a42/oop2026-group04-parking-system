@@ -1,4 +1,4 @@
-package parking.edu.aitu.oop3;
+package parking.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
