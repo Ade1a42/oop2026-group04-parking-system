@@ -1,6 +1,7 @@
 package parking;
 
 import parking.database.DatabaseConnection;
+import parking.database.IDB;
 import parking.repository.ParkingSpotRepository;
 import parking.repository.VehicleRepository;
 import parking.service.ParkingSpotService;
@@ -10,75 +11,99 @@ import parking.model.Vehicle;
 import parking.exception.InvalidVehiclePlate;
 import parking.exception.NoFreeSpots;
 
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== PARKING MANAGEMENT SYSTEM ===\n");
+        System.out.println("=== SMART PARKING MANAGEMENT SYSTEM ===\n");
 
         try {
-            // Get database instance
-            DatabaseConnection db = DatabaseConnection.getInstance();
+            IDB db = new DatabaseConnection();
 
-            // Create repositories with database connection
             ParkingSpotRepository spotRepo = new ParkingSpotRepository(db);
             VehicleRepository vehicleRepo = new VehicleRepository(db);
 
-            // Create services
             ParkingSpotService spotService = new ParkingSpotService(spotRepo);
             VehicleService vehicleService = new VehicleService(vehicleRepo);
 
-            // VEHICLE OPERATIONS
-            System.out.println("=== Vehicle Operations ===");
+            Scanner scanner = new Scanner(System.in);
+            boolean running = true;
 
-            // Register a vehicle
-            try {
-                Vehicle vehicle1 = vehicleService.registerVehicle("ABC123", "John Doe");
-                System.out.println("✓ Registered vehicle: " + vehicle1.getPlateNumber() + " (ID: " + vehicle1.getId() + ")");
-            } catch (InvalidVehiclePlate e) {
-                System.out.println("✗ Error: " + e.getMessage());
-            }
+            while (running) {
+                System.out.println("\nSelect an option:");
+                System.out.println("1. Register a vehicle");
+                System.out.println("2. List all vehicles");
+                System.out.println("3. Add a parking spot");
+                System.out.println("4. List all parking spots");
+                System.out.println("5. Show available parking spots");
+                System.out.println("6. Exit");
+                System.out.print("Enter option: ");
 
-            // List all vehicles
-            System.out.println("\nAll vehicles:");
-            for (Vehicle v : vehicleService.getAllVehicles()) {
-                System.out.println("  " + v.getId() + ": " + v.getPlateNumber() + " - " + v.getOwnerName());
-            }
+                String input = scanner.nextLine();
 
-            // PARKING SPOT OPERATIONS
-            System.out.println("\n=== Parking Spot Operations ===");
+                switch (input) {
+                    case "1":
+                        System.out.print("Enter vehicle plate: ");
+                        String plate = scanner.nextLine();
+                        System.out.print("Enter owner name: ");
+                        String owner = scanner.nextLine();
+                        try {
+                            Vehicle vehicle = vehicleService.registerVehicle(plate, owner);
+                            System.out.println("✓ Registered: " + vehicle.getPlateNumber() + " (ID: " + vehicle.getId() + ")");
+                        } catch (InvalidVehiclePlate e) {
+                            System.out.println("✗ Error: " + e.getMessage());
+                        }
+                        break;
 
-            // List all parking spots
-            System.out.println("All parking spots:");
-            for (ParkingSpot spot : spotService.getAllSpots()) {
-                System.out.println("  " + spot);
-            }
+                    case "2":
+                        System.out.println("\nAll vehicles:");
+                        for (Vehicle v : vehicleService.getAllVehicles()) {
+                            System.out.println("  " + v.getId() + ": " + v.getPlateNumber() + " - " + v.getOwnerName());
+                        }
+                        break;
 
-            // Get available spots
-            try {
-                System.out.println("\nAvailable parking spots:");
-                for (ParkingSpot spot : spotService.getAvailableSpots()) {
-                    System.out.println("Available: " + spot);
+                    case "3":
+                        System.out.print("Enter spot code: ");
+                        String code = scanner.nextLine();
+                        System.out.print("Enter type (STANDARD/VIP): ");
+                        String type = scanner.nextLine();
+                        System.out.print("Enter zone: ");
+                        String zone = scanner.nextLine();
+                        ParkingSpot newSpot = spotService.addParkingSpot(code, type, zone);
+                        System.out.println("Added parking spot: " + newSpot);
+                        break;
+
+                    case "4":
+                        System.out.println("\nAll parking spots:");
+                        for (ParkingSpot spot : spotService.getAllSpots()) {
+                            System.out.println("  " + spot);
+                        }
+                        break;
+                    case "5":
+                        try {
+                            System.out.println("\nAvailable parking spots:");
+                            for (ParkingSpot spot : spotService.getAvailableSpots()) {
+                                System.out.println("Available: " + spot);
+                            }
+                        } catch (NoFreeSpots e) {
+                            System.out.println("NoFreeSpots: " + e.getMessage());
+                        }
+                        break;
+
+                    case "6":
+                        running = false;
+                        System.out.println("Exiting system. Bye!");
+                        break;
+
+                    default:
+                        System.out.println("Invalid option. Try again.");
                 }
-            } catch (NoFreeSpots e) {
-                System.out.println("NoFreeSpots: " + e.getMessage());
             }
 
-            // Add a new parking spot
-            System.out.println("\nAdding new parking spot...");
-            ParkingSpot newSpot = spotService.addParkingSpot("B2", "STANDARD", "ZONE_B");
-            if (newSpot != null) {
-                System.out.println("Added: " + newSpot);
-            }
-
-            // Find spot by ID
-            ParkingSpot foundSpot = spotService.getSpotById(1);
-            if (foundSpot != null) {
-                System.out.println("\nFound spot by ID (1): " + foundSpot);
-            }
-
-            System.out.println("\n===  System Ready! ===");
+            scanner.close();
 
         } catch (Exception e) {
-            System.out.println(" Unexpected error: " + e.getMessage());
+            System.out.println("Unexpected error: " + e.getMessage());
             e.printStackTrace();
         }
     }
